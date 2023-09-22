@@ -18,6 +18,7 @@ import {
   MIN_CARD_WIDTH,
   getDefaultLanguagesCountByLayout,
 } from "../src/cards/top-languages-card.js";
+import { expect, it, describe } from "@jest/globals";
 
 // adds special assertions like toHaveTextContent
 import "@testing-library/jest-dom";
@@ -46,7 +47,7 @@ const langs = {
  * Retrieve number array from SVG path definition string.
  *
  * @param {string} d SVG path definition string.
- * @return {number[]} Resulting numbers array.
+ * @returns {number[]} Resulting numbers array.
  */
 const getNumbersFromSvgPathDefinitionAttribute = (d) => {
   return d
@@ -69,7 +70,9 @@ const langPercentFromDonutLayoutSvg = (d, centerX, centerY) => {
     cartesianToPolar(centerX, centerY, dTmp[0], dTmp[1]).angleInDegrees + 90;
   let startAngle =
     cartesianToPolar(centerX, centerY, dTmp[7], dTmp[8]).angleInDegrees + 90;
-  if (startAngle > endAngle) startAngle -= 360;
+  if (startAngle > endAngle) {
+    startAngle -= 360;
+  }
   return (endAngle - startAngle) / 3.6;
 };
 
@@ -78,7 +81,7 @@ const langPercentFromDonutLayoutSvg = (d, centerX, centerY) => {
  *
  * @param {number} partLength Length of current chart part..
  * @param {number} totalCircleLength Total length of circle.
- * @return {number} Chart part percentage.
+ * @returns {number} Chart part percentage.
  */
 const langPercentFromDonutVerticalLayoutSvg = (
   partLength,

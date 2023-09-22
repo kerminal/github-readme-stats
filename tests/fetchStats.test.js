@@ -3,6 +3,7 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { calculateRank } from "../src/calculateRank.js";
 import { fetchStats } from "../src/fetchers/stats-fetcher.js";
+import { expect, it, describe, beforeEach, afterEach } from "@jest/globals";
 
 // Test parameters.
 const data_stats = {
@@ -15,6 +16,7 @@ const data_stats = {
         totalPullRequestReviewContributions: 50,
       },
       pullRequests: { totalCount: 300 },
+      mergedPullRequests: { totalCount: 240 },
       openIssues: { totalCount: 100 },
       closedIssues: { totalCount: 100 },
       followers: { totalCount: 100 },
@@ -107,6 +109,7 @@ describe("Test fetchStats", () => {
       all_commits: false,
       commits: 100,
       prs: 300,
+      reviews: 50,
       issues: 200,
       repos: 5,
       stars: 300,
@@ -119,6 +122,8 @@ describe("Test fetchStats", () => {
       totalCommits: 100,
       totalIssues: 200,
       totalPRs: 300,
+      totalPRsMerged: 240,
+      mergedPRsPercentage: 80,
       totalReviews: 50,
       totalStars: 300,
       totalDiscussionsStarted: 10,
@@ -140,6 +145,7 @@ describe("Test fetchStats", () => {
       all_commits: false,
       commits: 100,
       prs: 300,
+      reviews: 50,
       issues: 200,
       repos: 5,
       stars: 300,
@@ -152,6 +158,8 @@ describe("Test fetchStats", () => {
       totalCommits: 100,
       totalIssues: 200,
       totalPRs: 300,
+      totalPRsMerged: 240,
+      mergedPRsPercentage: 80,
       totalReviews: 50,
       totalStars: 300,
       totalDiscussionsStarted: 10,
@@ -179,6 +187,7 @@ describe("Test fetchStats", () => {
       all_commits: true,
       commits: 1000,
       prs: 300,
+      reviews: 50,
       issues: 200,
       repos: 5,
       stars: 300,
@@ -191,12 +200,30 @@ describe("Test fetchStats", () => {
       totalCommits: 1000,
       totalIssues: 200,
       totalPRs: 300,
+      totalPRsMerged: 240,
+      mergedPRsPercentage: 80,
       totalReviews: 50,
       totalStars: 300,
       totalDiscussionsStarted: 10,
       totalDiscussionsAnswered: 40,
       rank,
     });
+  });
+
+  it("should throw specific error when include_all_commits true and invalid username", async () => {
+    expect(fetchStats("asdf///---", true)).rejects.toThrow(
+      new Error("Invalid username provided."),
+    );
+  });
+
+  it("should throw specific error when include_all_commits true and API returns error", async () => {
+    mock
+      .onGet("https://api.github.com/search/commits?q=author:anuraghazra")
+      .reply(200, { error: "Some test error message" });
+
+    expect(fetchStats("anuraghazra", true)).rejects.toThrow(
+      new Error("Could not fetch total commits."),
+    );
   });
 
   it("should exclude stars of the `test-repo-1` repository", async () => {
@@ -209,6 +236,7 @@ describe("Test fetchStats", () => {
       all_commits: true,
       commits: 1000,
       prs: 300,
+      reviews: 50,
       issues: 200,
       repos: 5,
       stars: 200,
@@ -221,6 +249,8 @@ describe("Test fetchStats", () => {
       totalCommits: 1000,
       totalIssues: 200,
       totalPRs: 300,
+      totalPRsMerged: 240,
+      mergedPRsPercentage: 80,
       totalReviews: 50,
       totalStars: 200,
       totalDiscussionsStarted: 10,
@@ -237,6 +267,7 @@ describe("Test fetchStats", () => {
       all_commits: false,
       commits: 100,
       prs: 300,
+      reviews: 50,
       issues: 200,
       repos: 5,
       stars: 400,
@@ -249,6 +280,8 @@ describe("Test fetchStats", () => {
       totalCommits: 100,
       totalIssues: 200,
       totalPRs: 300,
+      totalPRsMerged: 240,
+      mergedPRsPercentage: 80,
       totalReviews: 50,
       totalStars: 400,
       totalDiscussionsStarted: 10,
@@ -265,6 +298,7 @@ describe("Test fetchStats", () => {
       all_commits: false,
       commits: 100,
       prs: 300,
+      reviews: 50,
       issues: 200,
       repos: 5,
       stars: 300,
@@ -277,6 +311,8 @@ describe("Test fetchStats", () => {
       totalCommits: 100,
       totalIssues: 200,
       totalPRs: 300,
+      totalPRsMerged: 240,
+      mergedPRsPercentage: 80,
       totalReviews: 50,
       totalStars: 300,
       totalDiscussionsStarted: 10,
@@ -293,6 +329,7 @@ describe("Test fetchStats", () => {
       all_commits: false,
       commits: 100,
       prs: 300,
+      reviews: 50,
       issues: 200,
       repos: 5,
       stars: 300,
@@ -305,6 +342,8 @@ describe("Test fetchStats", () => {
       totalCommits: 100,
       totalIssues: 200,
       totalPRs: 300,
+      totalPRsMerged: 240,
+      mergedPRsPercentage: 80,
       totalReviews: 50,
       totalStars: 300,
       totalDiscussionsStarted: 10,

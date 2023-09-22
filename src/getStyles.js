@@ -1,4 +1,5 @@
 // @ts-check
+
 /**
  * Calculates progress along the boundary of the circle i.e it's circumference.
  *
@@ -9,8 +10,12 @@ const calculateCircleProgress = (value) => {
   const radius = 40;
   const c = Math.PI * (radius * 2);
 
-  if (value < 0) value = 0;
-  if (value > 100) value = 100;
+  if (value < 0) {
+    value = 0;
+  }
+  if (value > 100) {
+    value = 100;
+  }
 
   return ((100 - value) / 100) * c;
 };
@@ -75,6 +80,7 @@ const getAnimations = () => {
  * @returns {string} Card CSS styles.
  */
 const getStyles = ({
+  // eslint-disable-next-line no-unused-vars
   titleColor,
   textColor,
   iconColor,
